@@ -275,7 +275,7 @@ function handleGetASolutionButton() {
 /**
  * Returns true if solution was found, else false. DFS recursive function.
  * TODO: figure out how to backtrack
- * O(?)
+ * O(9^(n^2))
  * @param {array} inputs
  * @param {integer} inputIndex
  */
@@ -290,8 +290,8 @@ function solver(inputs, inputIndex) {
   }
 
   rowAndCol = getRowAndCol(inputs[inputIndex].id);
-  row = rowAndCol[0];
-  col = rowAndCol[1];
+  let row = rowAndCol[0];
+  let col = rowAndCol[1];
 
   // Ignore cell if it was on the original board.
   if (originalBoard[row][col] != 0) {
@@ -305,6 +305,7 @@ function solver(inputs, inputIndex) {
       return true;
     }
   }
+  updateCellValue(row, col, 0);
   return false;
 }
 
