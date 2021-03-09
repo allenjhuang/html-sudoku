@@ -1,4 +1,5 @@
-let board = [
+// Zeroes are considered as unfilled cells for this script.
+const originalBoard = [
   [0, 0, 8, 6, 0, 1, 9, 0, 4],
   [9, 5, 0, 0, 0, 0, 0, 2, 0],
   [2, 0, 0, 5, 4, 0, 0, 0, 3],
@@ -9,6 +10,7 @@ let board = [
   [0, 2, 0, 0, 0, 0, 0, 1, 7],
   [3, 0, 1, 2, 0, 6, 8, 0, 0],
 ];
+let board = makeDeepCopy(originalBoard);  // deep copy
 const numRows = board.length;
 const numCols = board[0].length;
 const gridLen = 3;
@@ -74,8 +76,21 @@ function getRowAndCol(inpId) {
   return inpId.split('|')[1].split('_');
 }
 
+function resetBoard() {
+  document.querySelector('#tbody').remove();
+  const newTbody = document.createElement('tbody');
+  newTbody.id = 'tbody';
+  document.querySelector('#table').appendChild(newTbody);
+  board = makeDeepCopy();
+  makeBoard();
+}
+
+function makeDeepCopy(board) {
+  return JSON.parse(JSON.stringify(originalBoard));
+}
+
 /**
- * Handles what happens when the "Is solved?" button is pressed.
+ * Handles what happens when the "Check answer" button is pressed.
  */
 function handleIsSolvedButton() {
   // Update the global 2d array.
