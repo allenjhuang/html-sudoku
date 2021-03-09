@@ -21,8 +21,8 @@ function initialize() {
 }
 
 /**
- * Creates the html inputs for the board. O(n^2) where n is the length of the
- * square board.
+ * Creates the html inputs for the board.
+ * O(n^2) where n is the length of the square board.
  */
 function makeBoard() {
   const tbody = document.querySelector('#tbody');
@@ -102,8 +102,12 @@ function updateInternalBoard() {
   }
 }
 
+
+// Validation functions below.
+
 /**
  * Returns true if the Sudoku board is valid, else false.
+ * O(n^2) because for every cell, O(n) work is done. There are n^2 cells.
  */
 function isSolved() {
   for (let row = 0; row < numRows; row++) {
@@ -123,10 +127,9 @@ function isSolved() {
  */
 function testCell(row, col) {
   if (
-    isNaN(board[row][col]) === false &&
-    isRowValid(row, col) &&
-    isColValid(row, col) &&
-    is9by9Valid(row, col)
+    isCellValidInRow(row, col) &&
+    isCellValidInCol(row, col) &&
+    isCellValidIn9by9(row, col)
   ) {
     return true;
   }
@@ -138,8 +141,13 @@ function testCell(row, col) {
  * @param {integer} row index
  * @param {integer} col index
  */
-function isRowValid(row, col) {
+function isCellValidInRow(row, col) {
+  // Look through row.
   for (let j = 0; j < numCols; j++) {
+    // Has to be a number.
+    if (isNaN(board[row][j])) {
+      return false;
+    }
     if (col === j) {
       // Skip self.
       continue;
@@ -157,8 +165,13 @@ function isRowValid(row, col) {
  * @param {integer} row index
  * @param {integer} col index
  */
-function isColValid(row, col) {
+function isCellValidInCol(row, col) {
+  // Look through column.
   for (let i = 0; i < numRows; i++) {
+    // Has to be a number.
+    if (isNaN(board[i][col])) {
+      return false;
+    }
     if (row === i) {
       // Skip self.
       continue;
@@ -176,10 +189,27 @@ function isColValid(row, col) {
  * @param {integer} row index
  * @param {integer} col index
  */
-function is9by9Valid(row, col) {
-  const rowEnd = row % gridLen
-  const grid;
+function isCellValidIn9by9(row, col) {
+  const rowStart = Math.trunc(row / gridLen) * 3;
+  const colStart = Math.trunc(col / gridLen) * 3;
 
-
+  // Look through grid.
+  for (let i = rowStart; i < rowStart + gridLen; i++) {
+    for (let j = colStart; j < colStart + gridLen; j++) {
+// console.log(`${i}, ${j}`);  // debug
+      // Has to be a number.
+      if (isNaN(board[i][j])) {
+        return false;
+      }
+      if (row === i && col === j) {
+        // Skip self.
+        continue;
+      }
+      // Check for duplicates.
+      if (board[row][col] === board[i][j]) {
+        return false;
+      }
+    }
+  }
   return true;
 }
