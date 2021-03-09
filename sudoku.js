@@ -10,10 +10,23 @@ const originalBoard = [
   [0, 2, 0, 0, 0, 0, 0, 1, 7],
   [3, 0, 1, 2, 0, 6, 8, 0, 0],
 ];
+// const knownSolution = [
+//   [7, 3, 8, 6, 2, 1, 9, 5, 4],
+//   [9, 5, 4, 8, 3, 7, 6, 2, 1],
+//   [2, 1, 6, 5, 4, 9, 7, 8, 3],
+//   [4, 9, 5, 7, 6, 2, 1, 3, 8],
+//   [1, 6, 2, 4, 8, 3, 5, 7, 9],
+//   [8, 7, 3, 1, 9, 5, 2, 4, 6],
+//   [5, 8, 7, 9, 1, 4, 3, 6, 2],
+//   [6, 2, 9, 3, 5, 8, 4, 1, 7],
+//   [3, 4, 1, 2, 7, 6, 8, 9, 5],
+// ];
 let board = makeDeepCopy(originalBoard);  // deep copy
 const numRows = board.length;
 const numCols = board[0].length;
 const gridLen = 3;
+const minNum = 1;
+const maxNum = 9;
 
 initialize();
 
@@ -73,11 +86,12 @@ function makeTd(inpId) {
  * @param {string} inpId
  */
 function getRowAndCol(inpId) {
-  return inpId.split('|')[1].split('_');
+  const strArr = inpId.split('|')[1].split('_');
+  return [parseInt(strArr[0]), parseInt(strArr[1])];
 }
 
 /**
- * Clears the board and restarts.
+ * Clears the board and restarts puzzle.
  */
 function resetBoard() {
   document.querySelector('#tbody').remove();
@@ -96,6 +110,22 @@ function makeDeepCopy(board) {
 }
 
 /**
+ * Updates the global 2d array based on the html inputs.
+ */
+function updateInternalBoard() {
+  const inputs = document.querySelectorAll('.cell');
+  for (let i = 0, rowAndCol, row, col; i < inputs.length; i++) {
+    rowAndCol = getRowAndCol(inputs[i].id);
+    row = rowAndCol[0];
+    col = rowAndCol[1];
+    board[row][col] = parseInt(inputs[i].value);
+  }
+}
+
+
+// Validation functions below.
+
+/**
  * Handles what happens when the "Check answer" button is pressed.
  */
 function handleIsSolvedButton() {
@@ -111,29 +141,13 @@ function handleIsSolvedButton() {
 }
 
 /**
- * Updates the global 2d array based on the html inputs.
- */
-function updateInternalBoard() {
-  const inputs = document.querySelectorAll('.input');
-  for (let i = 0, rowAndCol, row, col; i < inputs.length; i++) {
-    rowAndCol = getRowAndCol(inputs[i].id);
-    row = rowAndCol[0];
-    col = rowAndCol[1];
-    board[row][col] = parseInt(inputs[i].value);
-  }
-}
-
-
-// Validation functions below.
-
-/**
  * Returns true if the Sudoku board is valid, else false.
  * O(n^2) because for every cell, O(n) work is done. There are n^2 cells.
  */
 function isSolved() {
   for (let row = 0; row < numRows; row++) {
     for (let col = 0; col < numCols; col++) {
-      if (testCell(row, col) === false) {
+      if (isCellValidTest(row, col) === false) {
         return false;
       }
     }
@@ -147,15 +161,22 @@ function isSolved() {
  * @param {integer} row index
  * @param {integer} col index
  */
-function testCell(row, col) {
-  if (
-    isCellValidInRow(row, col) &&
-    isCellValidInCol(row, col) &&
-    isCellValidIn9by9(row, col)
-  ) {
-    return true;
+function isCellValidTest(row, col) {
+  if (!isCellValidInRow(row, col)) {
+console.log('fail row');  // debug
+    return false;
   }
-  return false;
+
+  if (!isCellValidInCol(row, col)) {
+console.log('fail col');  // debug
+    return false;
+  }
+  if (!isCellValidIn9by9(row, col)) {
+console.log('fail 9-by-9');  // debug
+    return false;
+  }
+console.log('pass');  // debug
+  return true;
 }
 
 /**
@@ -221,7 +242,6 @@ function isCellValidIn9by9(row, col) {
   // Look through grid.
   for (let i = rowStart; i < rowStart + gridLen; i++) {
     for (let j = colStart; j < colStart + gridLen; j++) {
-// console.log(`${i}, ${j}`);  // debug
       // Has to be a number.
       if (isNaN(board[i][j])) {
         return false;
@@ -239,10 +259,63 @@ function isCellValidIn9by9(row, col) {
   return true;
 }
 
+
+// Solution functions
+
 /**
- * Inputs a solution onto the board.
- * O(?)
+ * Inputs a solution onto the board. Returns true if solution is found, else
+ * false.
  */
-function solver() {
-  return;
+function handleGetASolutionButton() {
+  resetBoard();
+  const inputs = document.querySelectorAll('.cell');  // 1d array of values
+  return solver(inputs, 0);
+}
+
+/**
+ * Returns true if solution was found, else false. DFS recursive function.
+ * TODO: figure out how to backtrack
+ * O(?)
+ * @param {array} inputs
+ * @param {integer} inputIndex
+ */
+function solver(inputs, inputIndex) {
+  if (inputIndex < 0) {
+    // No solution
+    return false;
+  }
+  if (inputIndex === inputs.length) {
+    // Solved!
+    return true;
+  }
+
+  rowAndCol = getRowAndCol(inputs[inputIndex].id);
+  row = rowAndCol[0];
+  col = rowAndCol[1];
+
+  // Ignore cell if it was on the original board.
+  if (originalBoard[row][col] != 0) {
+    return solver(inputs, inputIndex+1);
+  }
+
+  for (let num = minNum; num <= maxNum; num++) {
+    updateCellValue(row, col, num);
+    if (isCellValidTest(row, col) && solver(inputs, inputIndex+1)) {
+      // Finish everything here if solver reaches end.
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * Updates the specified cell's value in both the internal and visual board.
+ * @param {integer} row index
+ * @param {integer} col index
+ * @param {integer} num value to set to
+ */
+function updateCellValue(row, col, num) {
+  board[row][col] = num;
+console.log(`board[${row}][${col}] = ${board[row][col]}`);  // debug
+  document.getElementById(`inp|${row}_${col}`).value = num;
 }
