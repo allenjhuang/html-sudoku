@@ -55,7 +55,7 @@ function makeTd(inpId) {
   const td = document.createElement('td');
   const inp = document.createElement('input');
   inp.id = inpId;
-  inp.classList.add('input');
+  inp.classList.add('cell');
   inp.type = 'text';
   const rowCol = getRowAndCol(inpId);
   const row = rowCol[0];
