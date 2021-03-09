@@ -21,7 +21,7 @@ const originalBoard = [
 //   [6, 2, 9, 3, 5, 8, 4, 1, 7],
 //   [3, 4, 1, 2, 7, 6, 8, 9, 5],
 // ];
-let board = makeDeepCopy(originalBoard);  // deep copy
+let board = makeDeepCopy(originalBoard);
 const numRows = board.length;
 const numCols = board[0].length;
 const gridLen = 3;
