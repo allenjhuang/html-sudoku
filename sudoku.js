@@ -288,7 +288,7 @@ function solver(inputs, inputIndex) {
     return true;
   }
 
-  rowAndCol = getRowAndCol(inputs[inputIndex].id);
+  let rowAndCol = getRowAndCol(inputs[inputIndex].id);
   let row = rowAndCol[0];
   let col = rowAndCol[1];
 
