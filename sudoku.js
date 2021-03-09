@@ -171,8 +171,8 @@ console.log('fail row');  // debug
 console.log('fail col');  // debug
     return false;
   }
-  if (!isCellValidIn9by9(row, col)) {
-console.log('fail 9-by-9');  // debug
+  if (!isCellValidInGrid(row, col)) {
+console.log('fail grid');  // debug
     return false;
   }
 console.log('pass');  // debug
@@ -230,14 +230,14 @@ function isCellValidInCol(row, col) {
 }
 
 /**
- * Returns true if the number is unique in the 9-by-9 grid.
+ * Returns true if the number is unique in the grid.
  * O(n)
  * @param {integer} row index
  * @param {integer} col index
  */
-function isCellValidIn9by9(row, col) {
-  const rowStart = Math.trunc(row / gridLen) * 3;
-  const colStart = Math.trunc(col / gridLen) * 3;
+function isCellValidInGrid(row, col) {
+  const rowStart = Math.trunc(row / gridLen) * gridLen;
+  const colStart = Math.trunc(col / gridLen) * gridLen;
 
   // Look through grid.
   for (let i = rowStart; i < rowStart + gridLen; i++) {
