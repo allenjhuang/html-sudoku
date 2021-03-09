@@ -274,7 +274,6 @@ function handleGetASolutionButton() {
 
 /**
  * Returns true if solution was found, else false. DFS recursive function.
- * TODO: figure out how to backtrack
  * O(9^(n^2))
  * @param {array} inputs
  * @param {integer} inputIndex
