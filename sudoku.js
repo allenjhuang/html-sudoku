@@ -142,7 +142,8 @@ function isSolved() {
 }
 
 /**
- * Returns true if the number in the cell is valid. O(n)
+ * Returns true if the number in the cell is valid.
+ * O(n)
  * @param {integer} row index
  * @param {integer} col index
  */
@@ -158,7 +159,8 @@ function testCell(row, col) {
 }
 
 /**
- * Returns true if the number is unique in the row. O(n)
+ * Returns true if the number is unique in the row.
+ * O(n)
  * @param {integer} row index
  * @param {integer} col index
  */
@@ -182,7 +184,8 @@ function isCellValidInRow(row, col) {
 }
 
 /**
- * Returns true if the number is unique in the column. O(n)
+ * Returns true if the number is unique in the column.
+ * O(n)
  * @param {integer} row index
  * @param {integer} col index
  */
@@ -206,7 +209,8 @@ function isCellValidInCol(row, col) {
 }
 
 /**
- * Returns true if the number is unique in the 9-by-9 grid. O(n)
+ * Returns true if the number is unique in the 9-by-9 grid.
+ * O(n)
  * @param {integer} row index
  * @param {integer} col index
  */
@@ -233,4 +237,12 @@ function isCellValidIn9by9(row, col) {
     }
   }
   return true;
+}
+
+/**
+ * Inputs a solution onto the board.
+ * O(?)
+ */
+function solver() {
+  return;
 }
