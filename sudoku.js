@@ -76,6 +76,9 @@ function getRowAndCol(inpId) {
   return inpId.split('|')[1].split('_');
 }
 
+/**
+ * Clears the board and restarts.
+ */
 function resetBoard() {
   document.querySelector('#tbody').remove();
   const newTbody = document.createElement('tbody');
@@ -85,6 +88,9 @@ function resetBoard() {
   makeBoard();
 }
 
+/**
+ * Returns a deep copy of the array.
+ */
 function makeDeepCopy(board) {
   return JSON.parse(JSON.stringify(originalBoard));
 }
