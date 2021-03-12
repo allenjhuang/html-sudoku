@@ -104,6 +104,7 @@ function resetBoard() {
 
 /**
  * Returns a deep copy of the array.
+ * @param {array} board
  */
 function makeDeepCopy(board) {
   return JSON.parse(JSON.stringify(originalBoard));
